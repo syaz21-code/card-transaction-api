@@ -37,4 +37,17 @@ public class GlobalExceptionHandler {
             ));
     }
 
+    @ExceptionHandler(ExternalApiException.class)
+    public ResponseEntity<Map<String, String>>
+            handleExternalApiException(
+                ExternalApiException exception) {
+
+        return ResponseEntity
+            .status(exception.getStatus())
+            .body(Map.of(
+                "error", "EXTERNAL_API_ERROR",
+                "message", exception.getMessage()
+            ));
+    }
+
 }

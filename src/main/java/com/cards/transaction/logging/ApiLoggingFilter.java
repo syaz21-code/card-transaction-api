@@ -128,6 +128,13 @@ public class ApiLoggingFilter extends OncePerRequestFilter {
                 appendField(summary, json, "id");
                 appendField(summary, json, "referenceNumber");
                 appendField(summary, json, "status");
+                
+                if (json.has("rate")) {
+                    appendField(summary, json, "date");
+                    appendField(summary, json, "base");
+                    appendField(summary, json, "quote");
+                    appendField(summary, json, "rate");
+                }
 
                 if (json.has("page")) {
                     appendField(summary, json, "page");
