@@ -3,6 +3,8 @@ package com.cards.transaction.controller;
 
 import com.cards.transaction.dto.CreateTransactionRequest;
 import com.cards.transaction.dto.TransactionResponse;
+import com.cards.transaction.dto.UpdateTransactionRequest;
+
 import com.cards.transaction.service.CardTransactionService;
 
 import jakarta.validation.Valid;
@@ -40,6 +42,17 @@ public class CardTransactionController {
 
         TransactionResponse response =
             service.getTransactionById(id);
+
+        return ResponseEntity.ok(response);
+    }
+    
+    @PutMapping("/{id}")
+    public ResponseEntity<TransactionResponse> updateTransaction(
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateTransactionRequest request) {
+
+        TransactionResponse response =
+            service.updateTransaction(id, request);
 
         return ResponseEntity.ok(response);
     }

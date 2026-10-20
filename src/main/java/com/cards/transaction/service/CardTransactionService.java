@@ -3,6 +3,7 @@ package com.cards.transaction.service;
 
 import com.cards.transaction.dto.CreateTransactionRequest;
 import com.cards.transaction.dto.TransactionResponse;
+import com.cards.transaction.dto.UpdateTransactionRequest;
 import com.cards.transaction.entity.CardTransaction;
 import com.cards.transaction.repository.CardTransactionRepository;
 import com.cards.transaction.exception.TransactionNotFoundException;
@@ -67,5 +68,32 @@ public class CardTransactionService {
             transaction.getCreatedAt()
         );
     }
+    
+    @Transactional
+    public TransactionResponse updateTransaction(
+            Long id,
+            UpdateTransactionRequest request) {
+
+        CardTransaction transaction = repository.findById(id)
+            .orElseThrow(() -> new TransactionNotFoundException(id));
+
+        transaction.setMerchantName(request.merchantName());
+        transaction.setAmount(request.amount());
+        transaction.setCurrency(request.currency());
+        transaction.setStatus(request.status());
+
+        CardTransaction updated = repository.save(transaction);
+
+        return new TransactionResponse(
+            updated.getId(),
+            updated.getReferenceNumber(),
+            updated.getMerchantName(),
+            updated.getAmount(),
+            updated.getCurrency(),
+            updated.getStatus(),
+            updated.getCreatedAt()
+        );
+    }
+
 
 }
