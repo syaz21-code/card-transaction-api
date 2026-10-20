@@ -33,4 +33,15 @@ public class CardTransactionController {
             .status(HttpStatus.CREATED)
             .body(response);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<TransactionResponse> getTransactionById(
+            @PathVariable Long id) {
+
+        TransactionResponse response =
+            service.getTransactionById(id);
+
+        return ResponseEntity.ok(response);
+    }
+
 }
