@@ -4,6 +4,7 @@ package com.cards.transaction.controller;
 import com.cards.transaction.dto.CreateTransactionRequest;
 import com.cards.transaction.dto.TransactionResponse;
 import com.cards.transaction.dto.UpdateTransactionRequest;
+import com.cards.transaction.dto.TransactionPageResponse;
 
 import com.cards.transaction.service.CardTransactionService;
 
@@ -56,5 +57,22 @@ public class CardTransactionController {
 
         return ResponseEntity.ok(response);
     }
+    
+    @GetMapping
+    public ResponseEntity<TransactionPageResponse> getAllTransactions(
+            @RequestParam(defaultValue = "0") int page) {
+
+        if (page < 0) {
+            throw new IllegalArgumentException(
+                "Page number must be zero or greater"
+            );
+        }
+
+        TransactionPageResponse response =
+            service.getAllTransactions(page);
+
+        return ResponseEntity.ok(response);
+    }
+
 
 }

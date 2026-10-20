@@ -4,11 +4,18 @@ package com.cards.transaction.service;
 import com.cards.transaction.dto.CreateTransactionRequest;
 import com.cards.transaction.dto.TransactionResponse;
 import com.cards.transaction.dto.UpdateTransactionRequest;
+import com.cards.transaction.dto.TransactionPageResponse;
+
 import com.cards.transaction.entity.CardTransaction;
 import com.cards.transaction.repository.CardTransactionRepository;
 import com.cards.transaction.exception.TransactionNotFoundException;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -92,6 +99,42 @@ public class CardTransactionService {
             updated.getCurrency(),
             updated.getStatus(),
             updated.getCreatedAt()
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public TransactionPageResponse getAllTransactions(int page) {
+
+        Pageable pageable = PageRequest.of(
+            page,
+            10,
+            Sort.by(Sort.Direction.ASC, "id")
+        );
+
+        Page<CardTransaction> transactionPage =
+            repository.findAll(pageable);
+
+        Page<TransactionResponse> responsePage =
+            transactionPage.map(transaction ->
+                new TransactionResponse(
+                    transaction.getId(),
+                    transaction.getReferenceNumber(),
+                    transaction.getMerchantName(),
+                    transaction.getAmount(),
+                    transaction.getCurrency(),
+                    transaction.getStatus(),
+                    transaction.getCreatedAt()
+                )
+            );
+
+        return new TransactionPageResponse(
+            responsePage.getContent(),
+            responsePage.getNumber(),
+            responsePage.getSize(),
+            responsePage.getTotalElements(),
+            responsePage.getTotalPages(),
+            responsePage.isFirst(),
+            responsePage.isLast()
         );
     }
 
